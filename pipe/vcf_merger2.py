@@ -9,8 +9,9 @@ import os
 # --------------------------------------------------
 parser = OptionParser(usage="""Run annotation.py \n Usage: %prog [options]""")
 parser.add_option("-c","--chrom",action = 'store',type = 'string',dest = 'CHROM',help = "")
+parser.add_option("-s","--size",action = 'store',type = 'int',dest = 'SIZE',help = "")
 (opt, args) = parser.parse_args()
-if opt.CHROM == None:
+if opt.CHROM == None or opt.SIZE == None:
     print('Basic usage')
     print('')
     print('     python vcf_merger.py -c Chr3A -s size')
@@ -21,25 +22,7 @@ if opt.CHROM == None:
     sys.exit()
 
 input_chrom = opt.CHROM
-
-# --------------------------------------------------
-# Read chromosome size information from FASTA index
-# --------------------------------------------------
-fai_file = 'db/ref.fa.fai'
-chromSize_DICT = {}
-
-with open(fai_file, 'r') as fin:
-    for line in fin:
-        fields = line.rstrip('\n').split('\t')
-        chrom, chromSize = fields[0], fields[1]
-        chromSize_DICT[chrom] = int(chromSize)
-
-# Check whether the requested chromosome exists in the index
-if input_chrom not in chromSize_DICT:
-    print(f"Error: chromosome '{input_chrom}' was not found in {fai_file}")
-    sys.exit(1)
-
-chromSize = chromSize_DICT[input_chrom]
+chromSize = opt.SIZE
 
 # Size of each genomic chunk
 unit = 10000000
