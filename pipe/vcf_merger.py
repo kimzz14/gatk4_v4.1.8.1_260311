@@ -61,13 +61,13 @@ for unit_idx in range(int(chromSize / unit) + 1):
     fileName = f'pooled.HaplotypeCaller.{input_chrom}.{sPos}-{ePos}.all.vcf.gz'
 
     if os.path.exists(fileName):
-        print(fileName, 'on')
+        #print(fileName, 'on')
         existing_files.append(fileName)
     else:
         print(fileName, 'off')
         missing_files.append(fileName)
 # Stop if no input files are available
-if not missing_files:
+if len(missing_files) != 0:
     print(f"Error: no VCF chunk files were found for chromosome {input_chrom}")
     sys.exit(1)
 

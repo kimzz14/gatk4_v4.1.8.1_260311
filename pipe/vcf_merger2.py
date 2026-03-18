@@ -44,13 +44,13 @@ for unit_idx in range(int(chromSize / unit) + 1):
     fileName = f'pooled.HaplotypeCaller.{input_chrom}.{sPos}-{ePos}.all.vcf.gz'
 
     if os.path.exists(fileName):
-        print(fileName, 'on')
+        #print(fileName, 'on')
         existing_files.append(fileName)
     else:
         print(fileName, 'off')
         missing_files.append(fileName)
 # Stop if no input files are available
-if not missing_files:
+if len(missing_files) != 0:
     print(f"Error: no VCF chunk files were found for chromosome {input_chrom}")
     sys.exit(1)
 
@@ -77,16 +77,24 @@ fin.close()
 for fileName  in existing_files:
     print(fileName)
 
-    fin = gzip.open(fileName, 'rt')
-    # Skip all header lines
-    for line in fin:
-        if line.startswith('#CHROM') == True:
-            break
-    
-    # Write only variant records
-    for line in fin:
-        fout.write(line)
-    
-    fin.close()
+    try:
+        fin = gzip.open(fileName, 'rt')
+        # Skip all header lines
+        for line in fin:
+            if line.startswith('#CHROM') == True:
+                break
+        
+        # Write only variant records
+        for line in fin:
+            if len(line.rstrip('\n').split('\t')) != 336: 
+                print(fileName)
+                continue
+
+            fout.write(line)
+        
+        fin.close()
+    except Exception:
+        print(fileName)
+        continue
 
 fout.close()
