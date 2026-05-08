@@ -7,8 +7,10 @@ if [ -z ${chrom} ]; then
     exit 1
 fi
 
+mkdir -p /dev/shm/tmp
+
 gatk='/s3/opt/soft/gatk/gatk'
-${gatk} --java-options "-Djava.io.tmpdir=./tmp" SelectVariants \
+${gatk} --java-options "-Xmx128g -Xms128g -Djava.io.tmpdir=/dev/shm/tmp" SelectVariants \
     --reference             db/ref.fa \
     --intervals             ${chrom} \
     --exclude-filtered \
